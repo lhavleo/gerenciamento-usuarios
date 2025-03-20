@@ -1,22 +1,27 @@
 const connection = require('./connection');
 
-const usersInMemory = [
-    { id: 1, login: 'leonardo@hotmail.com', password:'leonardo', name: 'leonardo'},
-    { id: 2, login: 'vinicius@hotmail.com', password:'vinicius', name: 'vinicius'},
-    { id: 3, login: 'mateus@hotmail.com', password:'mateus', name: 'mateus'}
-];
+// const usersInMemory = [
+//     { id: 1, login: 'leonardo@hotmail.com', password:'leonardo', name: 'leonardo'},
+//     { id: 2, login: 'vinicius@hotmail.com', password:'vinicius', name: 'vinicius'},
+//     { id: 3, login: 'mateus@hotmail.com', password:'mateus', name: 'mateus'}
+// ];
 
 const getAll = async () => {
-    //const users = await connection.execute('select * from users');
-    //return users;
-
-    return usersInMemory
+    // return usersInMemory;
+    
+    const [users] = await connection.execute('select * from users');
+    return users;
 };
 
 const createUser = async (user) => {
-    const newUser = {id: usersInMemory.length + 1, ...user};
-    usersInMemory.push(newUser);
-    return newUser;
+    // const newUser = {id: usersInMemory.length + 1, ...user};
+    // usersInMemory.push(newUser);
+
+    const {login, password, name} = user;
+    const querry = 'insert into users (login,password,name) values (?, ?, ?)';
+
+    const newUser = await connection.execute(querry, [login, password, name]);
+    return { id: newUser.insertId, login, password, name};
 };
 
 const updateUser = async (id, updatedData) => {
