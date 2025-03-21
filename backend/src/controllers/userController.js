@@ -28,7 +28,7 @@ const update = async (req, res) => {
         const {id} = req.params;
         const {login, password, name} = req.body;
 
-        if (!login || !password || !name) {
+        if (!login && !password && !name) {
             return res.status(400).json({ message: 'Pelo menos um campo (email, senha ou nome) deve ser fornecido' });
         }
 
